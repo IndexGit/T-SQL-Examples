@@ -1,6 +1,8 @@
 ﻿-- выбор списка уникальных заполненных тегов в XML
 -- или кол-во уникальных заполненных тегов
 
+--  Script returns the list of unique tags in any XML or number of them
+
 DECLARE @xml xml
 
 -- тег <?xml version="1.0" encoding="utf-8"?>

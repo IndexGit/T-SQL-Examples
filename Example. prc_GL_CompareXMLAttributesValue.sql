@@ -12,6 +12,7 @@ CREATE PROCEDURE [dbo].[prc_GL_CompareXMLAttributesValue]
 	@is_simple_comapre int = 1
 AS
 /*
+  Script compare two xml for data attributes and values if it equal
 
 	Описание: 
 		Сравнение xml

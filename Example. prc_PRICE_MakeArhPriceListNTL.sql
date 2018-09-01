@@ -6,6 +6,9 @@
 	@ProductID int = NULL,			-- Для отладки пока
 	@PricePolID int = NULL			-- Фильтр по прайсу
 -------------------------------------------------------------------------------------
+--  Procedure - part of huge project, that calculate customer price depend on many settings for products
+--  A lot of queries, dynamic and pivot
+
 --	Процедура расчёта цен для слоёв по скидкам. Использовать для срабатывания проверок из процедуры
 --	prc_PRICE_MakeArhPrice
 -------------------------------------------------------------------------------------

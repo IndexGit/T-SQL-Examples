@@ -8,6 +8,9 @@
 	@Debug bit	= 0								-- Флаг отладки процедуры
 AS
 /*
+  Procedure - part of Mercury project started on Russia in 2017 year.
+  Just example of XML modifying process (XML DML)
+
 	Описание:
 		Интерфейс № 3
 		Создание интерфейсного сообщения по передаче из Лиасофт в Меркурий на гашение ТВСД

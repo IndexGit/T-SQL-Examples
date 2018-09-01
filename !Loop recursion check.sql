@@ -1,6 +1,9 @@
 ﻿/*
  Ниже решение для уже существующей таблицы с данными , где есть записи parent_id > id
  Иначе наиболее грамотным будет решение с ограничениями: CHECK (id >= 1), CHECK (parent_id < id)
+ 
+ This solution for already existing table with data using in trigger, 
+ otherwise the most correct solution will be adding Check constraint to parent id
 */
 
 IF (NOT OBJECT_id('tempdb..#MyTable') IS NULL) 
