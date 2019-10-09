@@ -92,9 +92,9 @@ SELECT
 FROM
 	boxes b
 	INNER JOIN people p ON
-		b_aft BETWEEN p_bef AND p_aft
+		b_aft BETWEEN p_bef+1 AND p_aft
 		OR
-		p_aft BETWEEN b_bef AND b_aft
+		p_aft BETWEEN b_bef+1 AND b_aft
 ORDER BY
 	boxid,pid
 
