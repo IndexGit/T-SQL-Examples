@@ -29,39 +29,6 @@ Constraints:
 
 -- Tables description:
 
-declare  @people table(bid int  primary key identity(1,1), qty int )
-declare @box table(pid int  primary key identity(1,1), qty int )
-
-Insert into @box 
-Values
-  (4),
-  (5),
-  (2),
-  (9),
-  (5)
-
-Insert into @people
-Values
-  (2),
-  (3),
-  (9),
-  (4),
-  (8)
-
--- Expected query result:
-
-pid, boxid, qty (взятое кол-во)
-1,1,2
-  2,1,2
-  2,2,1
-  3,2,4
-  3,3,2,
-  3,4,3
-  4,4,4
-  5,4,2
-  5,5,5
-*/
-
 DECLARE @people TABLE(pid int primary key identity(1,1), qty int)
 DECLARE @box TABLE (boxid int primary key identity(1,1), qty int)
 
@@ -71,7 +38,7 @@ VALUES
   (5),
   (2),
   (9),
-  (5)
+  (15)
 
 INSERT INTO @people(qty)
 VALUES
@@ -79,18 +46,24 @@ VALUES
   (3),
   (9),
   (4),
-  (8)
+  (1),
+  (1),
+  (2),
+  (13),
+  (2)
 
 ------------------------------------------------------------------------------------------------------
 -- solution:
 ------------------------------------------------------------------------------------------------------
 
+-- boxes
 ;WITH boxes AS
 (
 	SELECT
 		boxid,
-		ISNULL(SUM(qty) OVER(ORDER BY boxid ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING),0) as b_bef,
-		SUM(qty) OVER(ORDER BY boxid ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as b_aft	
+		ISNULL(SUM(qty) OVER(ORDER BY boxid ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING),0) as b_bef,	-- count of total items before this box was opened
+		SUM(qty) OVER(ORDER BY boxid ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as b_aft	,		-- count of total items after opening this box
+		qty
 	FROM 
 		@box b
 ),
@@ -98,22 +71,31 @@ people AS
 (
 	SELECT
 		pid,	
-		ISNULL(SUM(qty) OVER(ORDER BY pid ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING),0) as p_bef,
-		SUM(qty) OVER(ORDER BY pid ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as p_aft	
+		ISNULL(SUM(qty) OVER(ORDER BY pid ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING),0) as p_bef,	-- count of items was taken before this man
+		SUM(qty) OVER(ORDER BY pid ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as p_aft,			-- count of items was taken with this man total
+		qty
 	FROM 
 		@people p
 )	
 SELECT
-	boxid,pid,
+	boxid,			-- id of current box
+	pid,			-- id of current man
+	b_bef,			-- count of total items before this box was opened
+	b_aft,			-- count of total items after opening this box
+	p_bef,			-- count of items was taken before this man
+	p_aft,			-- count of items was taken with this man total
 		CASE WHEN p_aft <= b_aft THEN p_aft ELSE b_aft END -
 		CASE WHEN p_bef >= b_bef THEN p_bef ELSE b_bef END
-	as [get]
+	as [get],		-- count of items was taken from this [boxid] box by [pid] man
+	p.qty as pqty,	-- count items can take current man
+	b.qty as bqty	-- count of items in current box
 FROM
 	boxes b
 	INNER JOIN people p ON
-		b_aft between p_bef and p_aft
+		b_aft BETWEEN p_bef AND p_aft
 		OR
-		p_aft between b_bef and b_aft
+		p_aft BETWEEN b_bef AND b_aft
+ORDER BY
+	boxid,pid
 
 
-	
